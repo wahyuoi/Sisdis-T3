@@ -7,6 +7,7 @@ package sisdis;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.MalformedURLException;
 import java.net.URL;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -35,7 +36,12 @@ public class Klien extends HttpServlet {
         String url_ = request.getParameter("url");
         String nama = request.getParameter("nama");
         
-        URL url = new URL(url_);
+        URL url;
+        try{
+            url = new URL(url_);    
+        } catch (MalformedURLException e){
+            url = new URL("http://" + url_);
+        }
         
         HelloService helloService = new HelloService(url);
         
@@ -43,6 +49,7 @@ public class Klien extends HttpServlet {
         String result = helloPort.hello(nama);
         
         request.setAttribute("result", result);
+        request.setAttribute("url", url_);
         request.getRequestDispatcher("form.jsp").forward(request, response);
     }
 
